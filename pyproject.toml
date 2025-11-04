@@ -1,0 +1,7 @@
+[project]
+name = "foodie"
+version = "0.1.0"
+description = "Foodie is a food ordering application that enables businesses to manage resturants and the orders placed to resturants."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
