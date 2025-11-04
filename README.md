@@ -5,7 +5,8 @@ Foodie is a food ordering application that enables businesses to manage resturan
 ## Run Locally
 
 1. Install the [uv package manager](https://docs.astral.sh/uv/getting-started/installation/)
-2. Run the following command: `uv run flask run`
+2. Create the database with: `uv run flask --app foodie init-db`
+3. Start the application with: `uv run flask --app foodie run`
 
 ## Design
 
