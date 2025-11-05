@@ -2,7 +2,7 @@ import pathlib
 
 import flask
 
-from foodie.blueprints import home, auth
+from foodie.blueprints import home, auth, restaurant
 from foodie.db import db
 from foodie.seed import init_seed_db_command
 
@@ -27,5 +27,6 @@ def create_app():
     # Register routes
     app.register_blueprint(home.blueprint)
     app.register_blueprint(auth.blueprint)
+    app.register_blueprint(restaurant.blueprint)
 
     return app

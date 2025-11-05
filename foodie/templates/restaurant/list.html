@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurants{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div>
+        Restaurants
+        {% if g.user.role != 'ADMIN' %}
+            <span class="badge bg-secondary" style="float: right;">Showing {{ g.user.country }} only</span>
+        {% else %}
+            <span class="badge bg-success" style="float: right;">Showing all countries</span>
+        {% endif %}
+    </div>
+    
+    {% if restaurants %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Menu Items</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for restaurant in restaurants %}
+                <tr>
+                    <th scope="row">{{ restaurant.name }}</th>
+                    <td>{{ restaurant.description }}</td>
+                    <td>
+                        <span class="badge {% if restaurant.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ restaurant.country }}</span>
+                    </td>
+                    <td>{{ restaurant.address }}</td>
+                    <td>{{ restaurant.phone }}</td>
+                    <td>{{ restaurant.menu_count }} items</td>
+                    <td>
+                        <a href="{{ url_for('restaurant.view_restaurant', restaurant_id=restaurant.id) }}" class="btn btn-primary">View Menu</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No restaurants available in your region.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

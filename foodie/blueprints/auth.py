@@ -1,6 +1,6 @@
-from werkzeug.security import check_password_hash
-
+import functools
 import flask
+from werkzeug.security import check_password_hash
 
 from foodie.db import db
 from foodie.models import User
@@ -47,3 +47,41 @@ def load_logged_in_user():
         flask.g.user = None
     else:
         flask.g.user = db.session.query(User).filter_by(id=user_id).first()
+
+
+def login_required(view):
+    """
+    Decorator to require login for a view.
+
+    Usage: @login_required
+    """
+
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if flask.g.user is None:
+            flask.flash("Please log in to access this page.", "warning")
+            return flask.redirect(flask.url_for("auth.login"))
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+def check_country_access(country):
+    """
+    Check if the current user has access to data from the specified country.
+
+    Requires flask app context.
+
+    Args:
+        country: The country to check access for
+
+    Returns:
+        True if user has access, False otherwise
+    """
+    if flask.g.user is None:
+        return False
+
+    if flask.g.user.role == "ADMIN":
+        return True
+
+    return flask.g.user.country == country

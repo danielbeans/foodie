@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ restaurant.name }}{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div>
+        <div>
+            <h1>{{ restaurant.name }}</h1>
+            <p>{{ restaurant.description }}</p>
+            <p>
+                <span class="badge {% if restaurant.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ restaurant.country }}</span>
+            </p>
+            <p>📍 {{ restaurant.address }}</p>
+            <p>📞 {{ restaurant.phone }}</p>
+        </div>
+        <div>
+            <a href="{{ url_for('restaurant.list_restaurants') }}" class="btn btn-secondary">Back to Restaurants</a>
+        </div>
+    </div>
+</div>
+
+{% if items %}
+    {% for item in items %}
+        <div class="card">
+            <div class="card-header">{{ item.name }}</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Price ({% if restaurant.country == 'India' %}₹{% else %}${% endif %})</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ item.description }}</td>
+                        <td>
+                            {% if restaurant.country == 'India' %}
+                                ₹{{ "%.2f"|format(item.price) }}
+                            {% else %}
+                                ${{ "%.2f"|format(item.price) }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p>No menu items available at this time.</p>
+    </div>
+{% endif %}
+{% endblock %}
+
