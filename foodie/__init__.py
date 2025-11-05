@@ -2,9 +2,8 @@ import pathlib
 
 import flask
 
-from foodie.blueprints import home
-
-from . import db
+from foodie.blueprints import home, auth
+from foodie import db
 
 
 def create_app():
@@ -21,5 +20,6 @@ def create_app():
 
     # Register routes
     app.register_blueprint(home.blueprint)
+    app.register_blueprint(auth.blueprint)
 
     return app

@@ -1,5 +1,27 @@
 {% extends 'base.html' %}
 
+{% block title %}Home{% endblock %}
+
 {% block content %}
-<p>Home</p>
+<div>
+    <h1>Welcome to Foodie! 🍔</h1>
+    <p>Your food ordering application with role-based access control.</p>
+</div>
+<div>
+    <h2>Get Started</h2>
+    <p>Please <a href="{{ url_for('auth.login') }}">login</a> to start ordering food!</p>
+</div>
+
+<div>
+    <h2>Test Accounts</h2>
+    <p>Default password for all users: <code>password123</code></p>
+    <ul>
+        <li><strong>nick-fury</strong> - ADMIN (America)</li>
+        <li><strong>captain-marvel</strong> - MANAGER (India)</li>
+        <li><strong>captain-america</strong> - MANAGER (America)</li>
+        <li><strong>thanos</strong> - MEMBER (India)</li>
+        <li><strong>thor</strong> - MEMBER (India)</li>
+        <li><strong>travis</strong> - MEMBER (America)</li>
+    </ul>
+    </div>
 {% endblock %}
