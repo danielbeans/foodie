@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Login</h2>
+    
+    <form method="post">
+        <div>
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" required class="form-control">
+        </div>
+        
+        <div>
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" required class="form-control">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    
+    <div>
+        <strong>Test Accounts:</strong><br>
+        <small>Password for all: <code>password123</code></small>
+        <ul>
+            <li><strong>nick-fury</strong> - ADMIN</li>
+            <li><strong>captain-marvel</strong> - MANAGER (India)</li>
+            <li><strong>captain-america</strong> - MANAGER (America)</li>
+            <li><strong>thanos</strong> - MEMBER (India)</li>
+            <li><strong>thor</strong> - MEMBER (India)</li>
+            <li><strong>travis</strong> - MEMBER (America)</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+

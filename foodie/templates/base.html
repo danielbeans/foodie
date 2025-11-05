@@ -14,12 +14,20 @@
         <div class="container-lg">
             <a href="{{ url_for('home.index') }}" class="navbar-brand">🍔 Foodie</a>
             <ul class="navbar-nav">
-                <li><a href="{{ url_for('auth.login') }}" class="nav-link">Login</a></li>
+                {% if g.user %}
+                    <li><a class="btn btn-danger" href="{{ url_for('auth.logout') }}" role="button">Logout</a></li>
+                {% else %}
+                    <li><a class="btn btn-primary" href="{{ url_for('auth.login') }}" role="button">Login</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
+
     <div class="container-lg">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
         {% block content %}{% endblock %}
-    </div>
+    </div>  
 </body>
 </html>
