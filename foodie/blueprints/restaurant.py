@@ -59,12 +59,12 @@ def view_restaurant(restaurant_id):
     restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).first()
 
     if restaurant is None:
-        flask.flash("Restaurant not found.", "error")
+        flask.flash("Restaurant not found.", "danger")
         return flask.redirect(flask.url_for("restaurant.list_restaurants"))
 
     # Check if user has access to this restaurant's country
     if not check_country_access(restaurant.country):
-        flask.flash("You do not have permission to view this restaurant.", "error")
+        flask.flash("You do not have permission to view this restaurant.", "danger")
         return flask.redirect(flask.url_for("restaurant.list_restaurants"))
 
     menu_items = (

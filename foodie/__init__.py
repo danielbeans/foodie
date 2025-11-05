@@ -2,7 +2,7 @@ import pathlib
 
 import flask
 
-from foodie.blueprints import home, auth, restaurant
+from foodie.blueprints import home, auth, restaurant, order
 from foodie.db import db
 from foodie.seed import init_seed_db_command
 
@@ -28,5 +28,6 @@ def create_app():
     app.register_blueprint(home.blueprint)
     app.register_blueprint(auth.blueprint)
     app.register_blueprint(restaurant.blueprint)
+    app.register_blueprint(order.blueprint)
 
     return app

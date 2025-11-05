@@ -38,6 +38,7 @@
                     <td>{{ restaurant.phone }}</td>
                     <td>{{ restaurant.menu_count }} items</td>
                     <td>
+                        <a href="{{ url_for('order.create_order', restaurant_id=restaurant.id) }}" class="btn btn-success">Start Order</a>
                         <a href="{{ url_for('restaurant.view_restaurant', restaurant_id=restaurant.id) }}" class="btn btn-primary">View Menu</a>
                     </td>
                 </tr>

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h1>Order #{{ order.id }}</h1>
+            <p><strong>User:</strong> {{ order.full_name }}</p>
+            <p><strong>Restaurant:</strong> {{ order.restaurant_name }}</p>
+            <p><strong>Country:</strong> <span class="badge {% if order.restaurant_country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ order.restaurant_country }}</span></p>
+            <p><strong>Status:</strong>
+                {% if order.status == 'DRAFT' %}
+                    <span class="badge bg-secondary">Draft</span>
+                {% elif order.status == 'PLACED' %}
+                    <span class="badge bg-primary">Placed</span>
+                {% elif order.status == 'CANCELLED' %}
+                    <span class="badge bg-danger">Cancelled</span>
+                {% elif order.status == 'COMPLETED' %}
+                    <span class="badge bg-success">Completed</span>
+                {% endif %}
+            </p>
+            <p><strong>Created:</strong> {{ order.created_at }}</p>
+            {% if order.placed_at %}
+                <p><strong>Placed:</strong> {{ order.placed_at }}</p>
+            {% endif %}
+            {% if order.cancelled_at %}
+                <p><strong>Cancelled:</strong> {{ order.cancelled_at }}</p>
+            {% endif %}
+        </div>
+        <div>
+            <a href="{{ url_for('order.list_orders') }}" class="btn btn-secondary">Back to Orders</a>
+            {% if order.status == 'DRAFT' and (order.user_id == g.user.id or g.user.role in ['ADMIN', 'MANAGER']) %}
+                <a href="{{ url_for('order.edit_order', order_id=order.id) }}" class="btn btn-primary">Edit Cart</a>
+                {% if g.user.role in ['ADMIN', 'MANAGER'] %}
+                    <a href="{{ url_for('order.place_order', order_id=order.id) }}" class="btn btn-success">Checkout</a>
+                {% endif %}
+            {% endif %}
+            {% if order.status == 'PLACED' and g.user.role in ['ADMIN', 'MANAGER'] %}
+                <form method="post" action="{{ url_for('order.cancel_order', order_id=order.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-lg">
+    <h2>Order Items</h2>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>
+                        {% if order.restaurant_country == 'India' %}
+                            ₹{{ "%.2f"|format(item.unit_price) }}
+                        {% else %}
+                            ${{ "%.2f"|format(item.unit_price) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.restaurant_country == 'India' %}
+                            ₹{{ "%.2f"|format(item.subtotal) }}
+                        {% else %}
+                            ${{ "%.2f"|format(item.subtotal) }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="table-success">
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td>
+                        {% if order.restaurant_country == 'India' %}
+                            ₹{{ "%.2f"|format(order.total_amount) }}
+                        {% else %}
+                            ${{ "%.2f"|format(order.total_amount) }}
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% else %}
+        <p>No items in this order.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

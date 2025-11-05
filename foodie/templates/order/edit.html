@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h1>Shopping Cart - {{ order.restaurant_name }}</h1>
+            <p><span class="badge {% if order.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ order.country }}</span></p>
+        </div>
+        <div>
+            <a href="{{ url_for('order.view_order', order_id=order.id) }}" class="btn btn-secondary">View Order</a>
+            {% if g.user.role in ['ADMIN', 'MANAGER'] and items %}
+                <a href="{{ url_for('order.place_order', order_id=order.id) }}" class="btn btn-success">Proceed to Checkout</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-lg">
+    <h2>Current Cart Items</h2>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.item_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>
+                        {% if order.country == 'India' %}
+                            ₹{{ "%.2f"|format(item.unit_price) }}
+                        {% else %}
+                            ${{ "%.2f"|format(item.unit_price) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.country == 'India' %}
+                            ₹{{ "%.2f"|format(item.subtotal) }}
+                        {% else %}
+                            ${{ "%.2f"|format(item.subtotal) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ url_for('order.remove_item', order_id=order.id, item_id=item.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="table-success">
+                    <td colspan="3" style="text-align: right;">Total:</td>
+                    <td colspan="2">
+                        {% if order.country == 'India' %}
+                            ₹{{ "%.2f"|format(order.total_amount) }}
+                        {% else %}
+                            ${{ "%.2f"|format(order.total_amount) }}
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        {% if g.user.role not in ['ADMIN', 'MANAGER'] %}
+            <div class="alert alert-warning" style="margin-top: 1rem;">
+                <strong>Note:</strong> As a MEMBER, you can add items to cart but cannot place orders. 
+                Only ADMIN and MANAGER roles can checkout and pay.
+            </div>
+        {% endif %}
+    {% else %}
+        <p>Your cart is empty. Add items from the menu below.</p>
+    {% endif %}
+</div>
+
+<div class="container-lg">
+    <h2>Add Items from Menu</h2>
+    {% if menu_items %}
+        <form method="post" action="{{ url_for('order.add_item', order_id=order.id) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in menu_items %}
+                    <tr>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>
+                            {% if order.country == 'India' %}
+                                ₹{{ "%.2f"|format(item.price) }}
+                            {% else %}
+                                ${{ "%.2f"|format(item.price) }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{{ url_for('order.add_item', order_id=order.id) }}" style="display: inline;">
+                                <input type="hidden" name="menu_item_id" value="{{ item.id }}">
+                                <input type="number" name="quantity" value="1" min="1" max="99" style="width: 60px;">
+                        </td>
+                        <td>
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    {% else %}
+        <p>No menu items available.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

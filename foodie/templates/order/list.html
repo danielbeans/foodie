@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div>
+        {% if g.user.role == 'ADMIN' %}
+            All Orders
+            <span class="badge bg-success" style="float: right;">Admin View</span>
+        {% else %}
+            My Orders
+            <span class="badge {% if g.user.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}" style="float: right;">{{ g.user.country }} only</span>
+        {% endif %}
+    </div>
+    
+    {% if orders %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>User</th>
+                    <th>Restaurant</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>#{{ order.id }}</strong></td>
+                    <td>{{ order.full_name }}</td>
+                    <td>{{ order.restaurant_name }}</td>
+                    <td>
+                        {% if order.country == 'India' %}
+                            ₹{{ "%.2f"|format(order.total_amount) }}
+                        {% else %}
+                            ${{ "%.2f"|format(order.total_amount) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.status == 'DRAFT' %}
+                            <span class="badge bg-secondary">Draft</span>
+                        {% elif order.status == 'PLACED' %}
+                            <span class="badge bg-primary">Placed</span>
+                        {% elif order.status == 'CANCELLED' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% elif order.status == 'COMPLETED' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.created_at }}</td>
+                    <td>
+                        <a href="{{ url_for('order.view_order', order_id=order.id) }}" class="btn btn-primary">View</a>
+                        {% if order.status == 'DRAFT' and order.user_id == g.user.id %}
+                            <a href="{{ url_for('order.edit_order', order_id=order.id) }}" class="btn btn-secondary">Edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found.</p>
+        <p><a href="{{ url_for('restaurant.list_restaurants') }}" class="btn btn-primary">Browse Restaurants</a></p>
+    {% endif %}
+</div>
+{% endblock %}
+

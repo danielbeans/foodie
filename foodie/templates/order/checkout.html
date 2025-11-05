@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <h1>Checkout</h1>
+    <p><strong>Restaurant:</strong> {{ order.restaurant_name }}</p>
+    <p><span class="badge {% if order.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ order.country }}</span></p>
+</div>
+
+<div class="container-lg">
+    <h2>Order Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    {% if order.country == 'India' %}
+                        ₹{{ "%.2f"|format(item.unit_price) }}
+                    {% else %}
+                        ${{ "%.2f"|format(item.unit_price) }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if order.country == 'India' %}
+                        ₹{{ "%.2f"|format(item.subtotal) }}
+                    {% else %}
+                        ${{ "%.2f"|format(item.subtotal) }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr class="table-success">
+                <td colspan="3" style="text-align: right;">Total:</td>
+                <td>
+                    {% if order.country == 'India' %}
+                        ₹{{ "%.2f"|format(order.total_amount) }}
+                    {% else %}
+                        ${{ "%.2f"|format(order.total_amount) }}
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="container-lg">
+    <h2>Payment Information</h2>
+    <form method="post">
+        <button type="submit" class="btn btn-success" {% if g.user.role not in ['ADMIN', 'MANAGER'] %}disabled{% endif %}>Place Order</button>
+        <a href="{{ url_for('order.edit_order', order_id=order.id) }}" class="btn btn-secondary">Back to Cart</a>
+    </form>
+</div>
+
+<div class="alert alert-info">
+    <strong>Note:</strong> Only ADMIN and MANAGER roles can place orders. 
+    {% if g.user.role == 'MEMBER' %}
+        As a MEMBER, you cannot complete checkout.
+    {% endif %}
+</div>
+{% endblock %}
+

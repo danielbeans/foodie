@@ -66,6 +66,34 @@ def login_required(view):
     return wrapped_view
 
 
+def role_required(*roles):
+    """
+    Decorator to require specific role(s) for a view.
+
+    Args:
+        roles: List of roles to require
+
+    Usage: @role_required('ADMIN') or @role_required('ADMIN', 'MANAGER')
+    """
+
+    def decorator(view):
+        @functools.wraps(view)
+        def wrapped_view(**kwargs):
+            if flask.g.user is None:
+                flask.flash("Please log in to access this page.", "warning")
+                return flask.redirect(flask.url_for("auth.login"))
+
+            if flask.g.user.role not in roles:
+                flask.flash("You do not have permission to access this page.", "danger")
+                return flask.redirect(flask.url_for("home.index"))
+
+            return view(**kwargs)
+
+        return wrapped_view
+
+    return decorator
+
+
 def check_country_access(country):
     """
     Check if the current user has access to data from the specified country.
