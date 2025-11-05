@@ -70,7 +70,6 @@ def create_restaurants(restaurants_data):
                 name=item_data["name"],
                 description=item_data["description"],
                 price=item_data["price"],
-                price_unit=item_data["price_unit"],
             )
             menu_items.append(menu_item)
 

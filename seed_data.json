@@ -54,20 +54,17 @@
         {
           "name": "Butter Chicken",
           "description": "Tender chicken in a creamy sauce",
-          "price": 450.0,
-          "price_unit": "INR"
+          "price": 450.0
         },
         {
           "name": "Paneer Tikka",
           "description": "Grilled cottage cheese with spices",
-          "price": 350.0,
-          "price_unit": "INR"
+          "price": 350.0
         },
         {
           "name": "Biryani",
           "description": "Aromatic rice with vegetables and spices",
-          "price": 400.0,
-          "price_unit": "INR"
+          "price": 400.0
         }
       ]
     },
@@ -81,20 +78,17 @@
         {
           "name": "Dal Makhani",
           "description": "Creamy black lentils",
-          "price": 300.0,
-          "price_unit": "INR"
+          "price": 300.0
         },
         {
           "name": "Naan Bread",
           "description": "Fresh baked flatbread",
-          "price": 50.0,
-          "price_unit": "INR"
+          "price": 50.0
         },
         {
           "name": "Tandoori Chicken",
           "description": "Chicken marinated in yogurt and spices",
-          "price": 500.0,
-          "price_unit": "INR"
+          "price": 500.0
         }
       ]
     },
@@ -108,20 +102,17 @@
         {
           "name": "Classic Burger",
           "description": "Juicy beef patty with lettuce and tomato",
-          "price": 12.99,
-          "price_unit": "USD"
+          "price": 12.99
         },
         {
           "name": "French Fries",
           "description": "Crispy golden fries",
-          "price": 4.99,
-          "price_unit": "USD"
+          "price": 4.99
         },
         {
           "name": "Milkshake",
           "description": "Thick and creamy vanilla shake",
-          "price": 5.99,
-          "price_unit": "USD"
+          "price": 5.99
         }
       ]
     },
@@ -135,20 +126,17 @@
         {
           "name": "Double Cheeseburger",
           "description": "Two beef patties with cheese",
-          "price": 15.99,
-          "price_unit": "USD"
+          "price": 15.99
         },
         {
           "name": "Sweet Potato Fries",
           "description": "Crispy sweet potato fries",
-          "price": 6.99,
-          "price_unit": "USD"
+          "price": 6.99
         },
         {
           "name": "Onion Rings",
           "description": "Beer-battered onion rings",
-          "price": 5.99,
-          "price_unit": "USD"
+          "price": 5.99
         }
       ]
     }
