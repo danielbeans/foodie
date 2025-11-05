@@ -4,74 +4,80 @@ Run with: uv run flask --app foodie seed-db
 """
 
 import click
+import json
+import pathlib
 from werkzeug.security import generate_password_hash
 
 import flask
 
 from foodie.db import db
-from foodie.models import User
+from foodie.models import User, Restaurant, MenuItem
+
+
+def load_seed_data():
+    seed_file = pathlib.Path(__file__).parent.parent / "seed_data.json"
+    with seed_file.open() as f:
+        return json.load(f)
 
 
 def seed_db():
-    """Seed the database with initial data."""
+    """Seed the database with initial data from JSON file."""
 
     app = flask.current_app
 
     with app.app_context():
-        create_users()
+        data = load_seed_data()
+        create_users(data["users"])
+        create_restaurants(data["restaurants"])
 
 
-def create_users():
-    # Default password for all test users
-    default_password = generate_password_hash("password123")
-
-    users = [
-        User(
-            username="nick-fury",
-            password=default_password,
-            full_name="Nick Fury",
-            role="ADMIN",
-            country="America",
-        ),
-        User(
-            username="captain-marvel",
-            password=default_password,
-            full_name="Captain Marvel",
-            role="MANAGER",
-            country="India",
-        ),
-        User(
-            username="captain-america",
-            password=default_password,
-            full_name="Captain America",
-            role="MANAGER",
-            country="America",
-        ),
-        User(
-            username="thanos",
-            password=default_password,
-            full_name="Thanos",
-            role="MEMBER",
-            country="India",
-        ),
-        User(
-            username="thor",
-            password=default_password,
-            full_name="Thor",
-            role="MEMBER",
-            country="India",
-        ),
-        User(
-            username="travis",
-            password=default_password,
-            full_name="Travis",
-            role="MEMBER",
-            country="America",
-        ),
-    ]
+def create_users(users_data):
+    """Create users from JSON data."""
+    users = []
+    for user_data in users_data:
+        user = User(
+            username=user_data["username"],
+            password=generate_password_hash(user_data["password"]),
+            full_name=user_data["full_name"],
+            role=user_data["role"],
+            country=user_data["country"],
+        )
+        users.append(user)
 
     db.session.add_all(users)
     db.session.commit()
+    click.echo(f"Created {len(users)} users.")
+
+
+def create_restaurants(restaurants_data):
+    """Create restaurants and menu items from JSON data."""
+    for restaurant_data in restaurants_data:
+        restaurant = Restaurant(
+            name=restaurant_data["name"],
+            description=restaurant_data["description"],
+            country=restaurant_data["country"],
+            address=restaurant_data["address"],
+            phone=restaurant_data["phone"],
+        )
+        db.session.add(restaurant)
+        # Flush the session to get the restaurant ID before creating menu items
+        db.session.flush()
+
+        menu_items = []
+        for item_data in restaurant_data.get("menu_items", []):
+            menu_item = MenuItem(
+                restaurant_id=restaurant.id,
+                name=item_data["name"],
+                description=item_data["description"],
+                price=item_data["price"],
+                price_unit=item_data["price_unit"],
+            )
+            menu_items.append(menu_item)
+
+        db.session.add_all(menu_items)
+
+    db.session.commit()
+    click.echo(f"Created {len(restaurants_data)} restaurants with menu items.")
 
 
 @click.command("seed-db")

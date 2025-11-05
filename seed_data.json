@@ -1,0 +1,156 @@
+{
+  "users": [
+    {
+      "username": "nick-fury",
+      "password": "password123",
+      "full_name": "Nick Fury",
+      "role": "ADMIN",
+      "country": "America"
+    },
+    {
+      "username": "captain-marvel",
+      "password": "password123",
+      "full_name": "Captain Marvel",
+      "role": "MANAGER",
+      "country": "India"
+    },
+    {
+      "username": "captain-america",
+      "password": "password123",
+      "full_name": "Captain America",
+      "role": "MANAGER",
+      "country": "America"
+    },
+    {
+      "username": "thanos",
+      "password": "password123",
+      "full_name": "Thanos",
+      "role": "MEMBER",
+      "country": "India"
+    },
+    {
+      "username": "thor",
+      "password": "password123",
+      "full_name": "Thor",
+      "role": "MEMBER",
+      "country": "India"
+    },
+    {
+      "username": "travis",
+      "password": "password123",
+      "full_name": "Travis",
+      "role": "MEMBER",
+      "country": "America"
+    }
+  ],
+  "restaurants": [
+    {
+      "name": "Flavors of India",
+      "description": "Authentic Indian cuisine",
+      "country": "India",
+      "address": "Mumbai, Maharashtra",
+      "phone": "+91-1111-1111-11",
+      "menu_items": [
+        {
+          "name": "Butter Chicken",
+          "description": "Tender chicken in a creamy sauce",
+          "price": 450.0,
+          "price_unit": "INR"
+        },
+        {
+          "name": "Paneer Tikka",
+          "description": "Grilled cottage cheese with spices",
+          "price": 350.0,
+          "price_unit": "INR"
+        },
+        {
+          "name": "Biryani",
+          "description": "Aromatic rice with vegetables and spices",
+          "price": 400.0,
+          "price_unit": "INR"
+        }
+      ]
+    },
+    {
+      "name": "North Indian Cuisine",
+      "description": "North Indian specialties",
+      "country": "India",
+      "address": "New Delhi, Delhi",
+      "phone": "+91-2222-2222-22",
+      "menu_items": [
+        {
+          "name": "Dal Makhani",
+          "description": "Creamy black lentils",
+          "price": 300.0,
+          "price_unit": "INR"
+        },
+        {
+          "name": "Naan Bread",
+          "description": "Fresh baked flatbread",
+          "price": 50.0,
+          "price_unit": "INR"
+        },
+        {
+          "name": "Tandoori Chicken",
+          "description": "Chicken marinated in yogurt and spices",
+          "price": 500.0,
+          "price_unit": "INR"
+        }
+      ]
+    },
+    {
+      "name": "American Diner",
+      "description": "Classic American comfort food",
+      "country": "America",
+      "address": "New York, NY",
+      "phone": "+1-1111-1111-11",
+      "menu_items": [
+        {
+          "name": "Classic Burger",
+          "description": "Juicy beef patty with lettuce and tomato",
+          "price": 12.99,
+          "price_unit": "USD"
+        },
+        {
+          "name": "French Fries",
+          "description": "Crispy golden fries",
+          "price": 4.99,
+          "price_unit": "USD"
+        },
+        {
+          "name": "Milkshake",
+          "description": "Thick and creamy vanilla shake",
+          "price": 5.99,
+          "price_unit": "USD"
+        }
+      ]
+    },
+    {
+      "name": "Burger Palace",
+      "description": "Premium burgers and fries",
+      "country": "America",
+      "address": "Los Angeles, CA",
+      "phone": "+1-2222-2222-22",
+      "menu_items": [
+        {
+          "name": "Double Cheeseburger",
+          "description": "Two beef patties with cheese",
+          "price": 15.99,
+          "price_unit": "USD"
+        },
+        {
+          "name": "Sweet Potato Fries",
+          "description": "Crispy sweet potato fries",
+          "price": 6.99,
+          "price_unit": "USD"
+        },
+        {
+          "name": "Onion Rings",
+          "description": "Beer-battered onion rings",
+          "price": 5.99,
+          "price_unit": "USD"
+        }
+      ]
+    }
+  ]
+}
