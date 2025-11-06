@@ -6,12 +6,11 @@
 <div class="container-lg">
     <h1>Checkout</h1>
     <p><strong>Restaurant:</strong> {{ order.restaurant_name }}</p>
-    <p><span class="badge {% if order.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ order.country }}</span></p>
 </div>
 
 <div class="container-lg">
     <h2>Order Summary</h2>
-    <table>
+    <table class="table mt-3">
         <thead>
             <tr>
                 <th>Item</th>
@@ -41,8 +40,8 @@
                 </td>
             </tr>
             {% endfor %}
-            <tr class="table-success">
-                <td colspan="3" style="text-align: right;">Total:</td>
+            <tr class="table">
+                <td colspan="3" class="text-end">Total:</td>
                 <td>
                     {% if order.country == 'India' %}
                         ₹{{ "%.2f"|format(order.total_amount) }}
@@ -75,7 +74,7 @@
     </form>
 </div>
 
-<div class="alert alert-info">
+<div class="alert alert-info mt-3">
     <strong>Note:</strong> Only ADMIN and MANAGER roles can place orders. 
     {% if g.user.role == 'MEMBER' %}
         As a MEMBER, you cannot complete checkout.

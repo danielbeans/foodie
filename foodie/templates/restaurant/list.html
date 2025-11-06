@@ -5,16 +5,16 @@
 {% block content %}
 <div class="container-lg">
     <div>
-        Restaurants
+        <h1>Restaurants</h1>
         {% if g.user.role != 'ADMIN' %}
-            <span class="badge bg-secondary" style="float: right;">Showing {{ g.user.country }} only</span>
+            <span class="badge bg-secondary">Showing {{ g.user.country }} only</span>
         {% else %}
-            <span class="badge bg-success" style="float: right;">Showing all countries</span>
+            <span class="badge bg-success">Showing all countries</span>
         {% endif %}
     </div>
     
     {% if restaurants %}
-        <table class="table">
+        <table class="table mt-3">
             <thead>
                 <tr>
                     <th scope="col">Name</th>

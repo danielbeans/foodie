@@ -6,16 +6,16 @@
 <div class="container-lg">
     <div>
         {% if g.user.role == 'ADMIN' %}
-            All Orders
-            <span class="badge bg-success" style="float: right;">Admin View</span>
+            <h1>All Orders</h1>
+            <span class="badge bg-success">Admin View</span>
         {% else %}
-            My Orders
-            <span class="badge {% if g.user.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}" style="float: right;">{{ g.user.country }} only</span>
+            <h1>My Orders</h1>
+            <span class="badge {% if g.user.country == 'India' %}bg-warning{% else %}bg-danger{% endif %}">{{ g.user.country }} only</span>
         {% endif %}
     </div>
     
     {% if orders %}
-        <table>
+        <table class="table mt-3">
             <thead>
                 <tr>
                     <th>Order #</th>
@@ -59,7 +59,7 @@
                             <span class="badge bg-success">Completed</span>
                         {% endif %}
                     </td>
-                    <td>{{ order.created_at }}</td>
+                    <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>
                         <a href="{{ url_for('order.view_order', order_id=order.id) }}" class="btn btn-primary">View</a>
                         {% if order.status == 'DRAFT' and order.user_id == g.user.id %}

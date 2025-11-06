@@ -12,7 +12,7 @@
 </div>  
 
 {% if payment_methods %}
-    <div class="card">
+    <div class="container-lg mt-3">
         <table class="table">
             <thead>
                 <tr>
@@ -37,7 +37,7 @@
                             <span class="badge bg-secondary">Inactive</span>
                         {% endif %}
                     </td>
-                    <td>{{ method.created_at }}</td>
+                    <td>{{ method.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                     <td>
                         <a href="{{ url_for('admin.edit_payment_method', method_id=method.id) }}" class="btn btn-primary btn-sm">Edit</a>
                         <form method="post" action="{{ url_for('admin.toggle_payment_method', method_id=method.id) }}" style="display: inline;">

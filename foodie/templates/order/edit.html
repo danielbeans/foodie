@@ -21,7 +21,7 @@
 <div class="container-lg">
     <h2>Current Cart Items</h2>
     {% if items %}
-        <table>
+        <table class="table mt-3">
             <thead>
                 <tr>
                     <th>Item</th>
@@ -57,8 +57,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-                <tr class="table-success">
-                    <td colspan="3" style="text-align: right;">Total:</td>
+                <tr class="table">
+                    <td colspan="3" class="text-end">Total:</td>
                     <td colspan="2">
                         {% if order.country == 'India' %}
                             ₹{{ "%.2f"|format(order.total_amount) }}
@@ -85,12 +85,11 @@
     <h2>Add Items from Menu</h2>
     {% if menu_items %}
         <form method="post" action="{{ url_for('order.add_item', order_id=order.id) }}">
-            <table>
+            <table class="table mt-3">
                 <thead>
                     <tr>
                         <th>Item</th>
                         <th>Description</th>
-                        <th>Category</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Actions</th>
@@ -101,7 +100,6 @@
                     <tr>
                         <td><strong>{{ item.name }}</strong></td>
                         <td>{{ item.description }}</td>
-                        <td>{{ item.category }}</td>
                         <td>
                             {% if order.country == 'India' %}
                                 ₹{{ "%.2f"|format(item.price) }}

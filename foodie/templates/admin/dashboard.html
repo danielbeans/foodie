@@ -8,46 +8,51 @@
     <p>Welcome to the admin dashboard, {{ g.user.full_name }}!</p>
 </div>
 
-<div class="container-lg">
-    <div class="card">
-        <h2>{{ stats.total_users }}</h2>
-        <p>Total Users</p>
+<div class="container-lg row mt-3 gap-3">
+    <div class="card col-md-3">
+        <div class="card-body">
+            <h2 class="card-title">{{ stats.total_users }}</h2>
+            <p class="card-text">Total Users</p>
+        </div>
     </div>
     
-    <div class="card">
-        <h2>{{ stats.total_restaurants }}</h2>
-        <p>Total Restaurants</p>
+    <div class="card col-md-3">
+        <div class="card-body">
+            <h2 class="card-title">{{ stats.total_restaurants }}</h2>
+            <p class="card-text">Total Restaurants</p>
+        </div>
     </div>
     
-    <div class="card">
-        <h2>{{ stats.total_orders }}</h2>
-        <p>Total Orders</p>
+    <div class="card col-md-3">
+        <div class="card-body">
+            <h2 class="card-title">{{ stats.total_orders }}</h2>
+            <p class="card-text">Total Orders</p>
+        </div>
     </div>
     
-    <div class="card">
-        <h2>{{ stats.placed_orders }}</h2>
-        <p>Active Orders</p>
+    <div class="card col-md-3">
+        <div class="card-body">
+            <h2 class="card-title">{{ stats.placed_orders }}</h2>
+            <p class="card-text">Active Orders</p>
+        </div>
     </div>
     
-    <div class="card">
-            <h2>${{ "%.2f"|format(stats.total_revenue) }}</h2>
-            <p>Total Revenue</p>
+    <div class="card col-md-3">
+        <div class="card-body">
+            <h2 class="card-title">${{ "%.2f"|format(stats.total_revenue) }}</h2>
+            <p class="card-text">Total Revenue</p>
         </div>
     </div>
 </div>
 
-<div class="container-lg">
-    <div class="card">
-        <h2>Quick Actions</h2>
-        <p>
-            <a href="{{ url_for('admin.list_payment_methods') }}" class="btn btn-primary">Manage Payment Methods</a>
-            <a href="{{ url_for('order.list_orders') }}" class="btn btn-secondary">View Orders</a>
-        </p>
-    </div>
+<div class="container-lg mt-5">
+    <h2>Quick Actions</h2>
+    <a href="{{ url_for('admin.list_payment_methods') }}" class="btn btn-primary">Manage Payment Methods</a>
+    <a href="{{ url_for('order.list_orders') }}" class="btn btn-secondary">View Orders</a>
 </div>  
 
-<div class="container-lg">
-    <div class="card">
+<div class="container-lg mt-5">
+    <div>
         <h2>Recent Orders</h2>
         {% if recent_orders %}
             <table class="table">
@@ -80,7 +85,7 @@
                                 <span class="badge bg-success">Completed</span>
                             {% endif %}
                         </td>
-                        <td>{{ order.created_at }}</td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>
                             <a href="{{ url_for('order.view_order', order_id=order.id) }}" class="btn btn-primary btn-sm">View</a>
                         </td>

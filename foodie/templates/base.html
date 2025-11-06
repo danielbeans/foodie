@@ -35,7 +35,7 @@
         </div>
     </nav>
 
-    <div class="container-lg">
+    <div class="container-lg mt-3">
         {% for category, message in get_flashed_messages(with_categories=true) %}
             <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %}

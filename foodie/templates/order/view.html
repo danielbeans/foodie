@@ -24,12 +24,12 @@
             {% if order.payment_method_name %}
                 <p><strong>Payment Method:</strong> {{ order.payment_method_name }}</p>
             {% endif %}
-            <p><strong>Created:</strong> {{ order.created_at }}</p>
+            <p><strong>Created:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             {% if order.placed_at %}
-                <p><strong>Placed:</strong> {{ order.placed_at }}</p>
+                <p><strong>Placed:</strong> {{ order.placed_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             {% endif %}
             {% if order.cancelled_at %}
-                <p><strong>Cancelled:</strong> {{ order.cancelled_at }}</p>
+                <p><strong>Cancelled:</strong> {{ order.cancelled_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             {% endif %}
         </div>
         <div>
@@ -52,7 +52,7 @@
 <div class="container-lg">
     <h2>Order Items</h2>
     {% if items %}
-        <table>
+        <table class="table mt-3">
             <thead>
                 <tr>
                     <th>Item</th>
@@ -82,8 +82,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-                <tr class="table-success">
-                    <td colspan="3" style="text-align: right;">Total:</td>
+                <tr class="table">
+                    <td colspan="3" class="text-end">Total:</td>
                     <td>
                         {% if order.restaurant_country == 'India' %}
                             ₹{{ "%.2f"|format(order.total_amount) }}
