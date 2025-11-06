@@ -192,11 +192,7 @@ def add_item(order_id: int) -> flask.Response:
 def remove_item(order_id: int, item_id: int) -> flask.Response:
     from foodie.models import Order
 
-    order = (
-        db.session.query(Order)
-        .filter_by(id=order_id, user_id=flask.g.user.id, status="DRAFT")
-        .first()
-    )
+    order = db.session.query(Order).filter_by(id=order_id, status="DRAFT").first()
 
     if order is None:
         flask.flash("Order not found or cannot be modified.", "danger")
