@@ -131,6 +131,7 @@ uv run flask --app foodie seed-db
 ## Docker Deployment
 
 ```bash
+docker build -t foodie:latest .
 docker-compose up -d
 ```
 
