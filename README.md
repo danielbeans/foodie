@@ -43,7 +43,7 @@ The application implements a comprehensive RBAC system with three roles:
 1. **Clone the repository**
 
 ```bash
-git clone [<repository-url>](https://github.com/danielbeans/foodie.git)
+git clone https://github.com/danielbeans/foodie.git
 cd slooze-fullstack-challenge
 ```
 
