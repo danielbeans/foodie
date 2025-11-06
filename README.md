@@ -44,7 +44,7 @@ The application implements a comprehensive RBAC system with three roles:
 
 ```bash
 git clone https://github.com/danielbeans/foodie.git
-cd slooze-fullstack-challenge
+cd foodie
 ```
 
 2. **Install dependencies**
