@@ -17,6 +17,9 @@
                 <ul class="navbar-nav">
                     <li><a href="{{ url_for('order.list_orders') }}" class="nav-link active">Orders</a></li>
                     <li><a href="{{ url_for('restaurant.list_restaurants') }}" class="nav-link active">Restaurants</a></li>
+                    {% if g.user.role == 'ADMIN' %}
+                        <li><a href="{{ url_for('admin.dashboard') }}" class="nav-link active">Admin</a></li>
+                    {% endif %}
                 </ul>
             {% endif %}
             {% if g.user %}

@@ -1,4 +1,21 @@
 {
+  "payment_methods": [
+    {
+      "name": "Credit Card",
+      "description": "Pay using credit card",
+      "is_active": 1
+    },
+    {
+      "name": "Debit Card",
+      "description": "Pay using debit card",
+      "is_active": 1
+    },
+    {
+      "name": "Cash",
+      "description": "Pay using cash",
+      "is_active": 1
+    }
+  ],
   "users": [
     {
       "username": "nick-fury",
@@ -69,30 +86,6 @@
       ]
     },
     {
-      "name": "North Indian Cuisine",
-      "description": "North Indian specialties",
-      "country": "India",
-      "address": "New Delhi, Delhi",
-      "phone": "+91-2222-2222-22",
-      "menu_items": [
-        {
-          "name": "Dal Makhani",
-          "description": "Creamy black lentils",
-          "price": 300.0
-        },
-        {
-          "name": "Naan Bread",
-          "description": "Fresh baked flatbread",
-          "price": 50.0
-        },
-        {
-          "name": "Tandoori Chicken",
-          "description": "Chicken marinated in yogurt and spices",
-          "price": 500.0
-        }
-      ]
-    },
-    {
       "name": "American Diner",
       "description": "Classic American comfort food",
       "country": "America",
@@ -112,30 +105,6 @@
         {
           "name": "Milkshake",
           "description": "Thick and creamy vanilla shake",
-          "price": 5.99
-        }
-      ]
-    },
-    {
-      "name": "Burger Palace",
-      "description": "Premium burgers and fries",
-      "country": "America",
-      "address": "Los Angeles, CA",
-      "phone": "+1-2222-2222-22",
-      "menu_items": [
-        {
-          "name": "Double Cheeseburger",
-          "description": "Two beef patties with cheese",
-          "price": 15.99
-        },
-        {
-          "name": "Sweet Potato Fries",
-          "description": "Crispy sweet potato fries",
-          "price": 6.99
-        },
-        {
-          "name": "Onion Rings",
-          "description": "Beer-battered onion rings",
           "price": 5.99
         }
       ]

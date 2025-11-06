@@ -80,6 +80,23 @@ class MenuItem(db.Model):
         return f"<MenuItem {self.name} (${self.price})>"
 
 
+class PaymentMethod(db.Model):
+    """Payment method model."""
+
+    __tablename__ = "payment_method"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    is_active = Column(Integer, nullable=False, default=1)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
+
+    orders = relationship("Order", back_populates="payment_method")
+
+    def __repr__(self):
+        return f"<PaymentMethod {self.name}>"
+
+
 class Order(db.Model):
     """Order model"""
 
@@ -88,6 +105,7 @@ class Order(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     restaurant_id = Column(Integer, ForeignKey("restaurant.id"), nullable=False)
+    payment_method_id = Column(Integer, ForeignKey("payment_method.id"))
     status = Column(
         String,
         CheckConstraint("status IN ('DRAFT', 'PLACED', 'CANCELLED', 'COMPLETED')"),
@@ -102,6 +120,7 @@ class Order(db.Model):
 
     user = relationship("User", back_populates="orders")
     restaurant = relationship("Restaurant", back_populates="orders")
+    payment_method = relationship("PaymentMethod", back_populates="orders")
     order_items = relationship(
         "OrderItem", back_populates="order", cascade="all, delete-orphan"
     )

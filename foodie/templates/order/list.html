@@ -22,6 +22,7 @@
                     <th>User</th>
                     <th>Restaurant</th>
                     <th>Amount</th>
+                    <th>Payment Method</th>
                     <th>Status</th>
                     <th>Created</th>
                     <th>Actions</th>
@@ -38,6 +39,13 @@
                             ₹{{ "%.2f"|format(order.total_amount) }}
                         {% else %}
                             ${{ "%.2f"|format(order.total_amount) }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.payment_method_name %}
+                            {{ order.payment_method_name }}
+                        {% else %}
+                            <span class="text-muted">-</span>
                         {% endif %}
                     </td>
                     <td>

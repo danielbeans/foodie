@@ -21,6 +21,9 @@
                     <span class="badge bg-success">Completed</span>
                 {% endif %}
             </p>
+            {% if order.payment_method_name %}
+                <p><strong>Payment Method:</strong> {{ order.payment_method_name }}</p>
+            {% endif %}
             <p><strong>Created:</strong> {{ order.created_at }}</p>
             {% if order.placed_at %}
                 <p><strong>Placed:</strong> {{ order.placed_at }}</p>
@@ -95,6 +98,30 @@
         <p>No items in this order.</p>
     {% endif %}
 </div>
+
+{% if g.user.role == 'ADMIN' and order.status == 'PLACED' and payment_methods %}
+<div class="container-lg">
+    <div class="card">
+        <div class="card-header">Admin: Update Payment Method</div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('order.update_payment_method', order_id=order.id) }}">
+                <div class="mb-3">
+                    <label for="payment_method_id" class="form-label">Payment Method</label>
+                    <select class="form-select" id="payment_method_id" name="payment_method_id" required>
+                        <option value="">Select payment method...</option>
+                        {% for method in payment_methods %}
+                            <option value="{{ method.id }}" {% if order.payment_method_name == method.name %}selected{% endif %}>
+                                {{ method.name }} - {{ method.description }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Payment Method</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
 

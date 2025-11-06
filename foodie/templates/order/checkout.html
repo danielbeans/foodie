@@ -58,8 +58,20 @@
 <div class="container-lg">
     <h2>Payment Information</h2>
     <form method="post">
-        <button type="submit" class="btn btn-success" {% if g.user.role not in ['ADMIN', 'MANAGER'] %}disabled{% endif %}>Place Order</button>
-        <a href="{{ url_for('order.edit_order', order_id=order.id) }}" class="btn btn-secondary">Back to Cart</a>
+        <div class="form-group">
+            <label for="payment_method_id" class="form-label">Select Payment Method</label>
+            <select class="form-select" id="payment_method_id" name="payment_method_id" required>
+                <option value="">Choose payment method...</option>
+                {% for method in payment_methods %}
+                    <option value="{{ method.id }}">{{ method.name }} - {{ method.description }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div style="margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-success" {% if g.user.role not in ['ADMIN', 'MANAGER'] %}disabled{% endif %}>Place Order</button>
+            <a href="{{ url_for('order.edit_order', order_id=order.id) }}" class="btn btn-secondary">Back to Cart</a>
+        </div>
     </form>
 </div>
 

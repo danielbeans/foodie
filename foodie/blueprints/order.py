@@ -14,7 +14,7 @@ import flask
 from sqlalchemy import func
 
 from foodie.db import db
-from foodie.models import Order, Restaurant, User, OrderItem, MenuItem
+from foodie.models import Order, Restaurant, User, OrderItem, MenuItem, PaymentMethod
 from foodie.blueprints.auth import login_required, check_country_access, role_required
 
 blueprint = flask.Blueprint("order", __name__, url_prefix="/orders")
@@ -26,18 +26,20 @@ def list_orders():
     if flask.g.user.role == "ADMIN":
         # Admin can see all orders
         orders = (
-            db.session.query(Order, User, Restaurant)
+            db.session.query(Order, User, Restaurant, PaymentMethod)
             .join(User, Order.user_id == User.id)
             .join(Restaurant, Order.restaurant_id == Restaurant.id)
+            .outerjoin(PaymentMethod, Order.payment_method_id == PaymentMethod.id)
             .order_by(Order.created_at.desc())
             .all()
         )
     else:
         # Managers and Members can only see orders from their country
         orders = (
-            db.session.query(Order, User, Restaurant)
+            db.session.query(Order, User, Restaurant, PaymentMethod)
             .join(User, Order.user_id == User.id)
             .join(Restaurant, Order.restaurant_id == Restaurant.id)
+            .outerjoin(PaymentMethod, Order.payment_method_id == PaymentMethod.id)
             .filter(Restaurant.country == flask.g.user.country)
             .order_by(Order.created_at.desc())
             .all()
@@ -45,7 +47,7 @@ def list_orders():
 
     # Convert to list of objects for template compatibility
     order_list = []
-    for order, user, restaurant in orders:
+    for order, user, restaurant, payment_method in orders:
         order_dict = {
             "id": order.id,
             "user_id": order.user_id,
@@ -55,6 +57,7 @@ def list_orders():
             "country": restaurant.country,
             "total_amount": order.total_amount,
             "status": order.status,
+            "payment_method_name": payment_method.name if payment_method else None,
             "created_at": order.created_at,
         }
         order_list.append(order_dict)
@@ -66,9 +69,10 @@ def list_orders():
 @login_required
 def view_order(order_id):
     result = (
-        db.session.query(Order, User, Restaurant)
+        db.session.query(Order, User, Restaurant, PaymentMethod)
         .join(User, Order.user_id == User.id)
         .join(Restaurant, Order.restaurant_id == Restaurant.id)
+        .outerjoin(PaymentMethod, Order.payment_method_id == PaymentMethod.id)
         .filter(Order.id == order_id)
         .first()
     )
@@ -77,7 +81,7 @@ def view_order(order_id):
         flask.flash("Order not found.", "warning")
         return flask.redirect(flask.url_for("order.list_orders"))
 
-    order, user, restaurant = result
+    order, user, restaurant, payment_method = result
 
     if not check_country_access(restaurant.country):
         flask.flash("You do not have permission to view this order.", "danger")
@@ -100,6 +104,7 @@ def view_order(order_id):
         "restaurant_country": restaurant.country,
         "status": order.status,
         "total_amount": order.total_amount,
+        "payment_method_name": payment_method.name if payment_method else None,
         "created_at": order.created_at,
         "placed_at": order.placed_at,
         "cancelled_at": order.cancelled_at,
@@ -116,7 +121,22 @@ def view_order(order_id):
         }
         items_list.append(item_dict)
 
-    return flask.render_template("order/view.html", order=order_dict, items=items_list)
+    # Get payment methods for admin update feature
+    payment_methods = None
+    if flask.g.user and flask.g.user.role == "ADMIN" and order.status == "PLACED":
+        payment_methods = (
+            db.session.query(PaymentMethod)
+            .filter_by(is_active=1)
+            .order_by(PaymentMethod.name)
+            .all()
+        )
+
+    return flask.render_template(
+        "order/view.html",
+        order=order_dict,
+        items=items_list,
+        payment_methods=payment_methods,
+    )
 
 
 @blueprint.route("/create/<int:restaurant_id>", methods=("GET", "POST"))
@@ -168,7 +188,7 @@ def edit_order(order_id):
         .first()
     )
     if result is None:
-        flask.flash("Order not found.", "error")
+        flask.flash("Order not found.", "danger")
         return flask.redirect(flask.url_for("order.list_orders"))
 
     order, restaurant = result
@@ -240,7 +260,7 @@ def add_item(order_id):
     )
 
     if order is None:
-        flask.flash("Order not found or cannot be modified.", "error")
+        flask.flash("Order not found or cannot be modified.", "danger")
         return flask.redirect(flask.url_for("order.list_orders"))
 
     menu_item = (
@@ -254,7 +274,7 @@ def add_item(order_id):
     )
 
     if menu_item is None:
-        flask.flash("Menu item not found.", "error")
+        flask.flash("Menu item not found.", "danger")
         return flask.redirect(flask.url_for("order.edit_order", order_id=order_id))
 
     menu_item, restaurant = menu_item
@@ -321,7 +341,7 @@ def place_order(order_id):
     )
 
     if result is None:
-        flask.flash("Order not found.", "error")
+        flask.flash("Order not found.", "danger")
         return flask.redirect(flask.url_for("order.list_orders"))
 
     order, restaurant = result
@@ -339,7 +359,25 @@ def place_order(order_id):
         return flask.redirect(flask.url_for("order.edit_order", order_id=order_id))
 
     if flask.request.method == "POST":
+        payment_method_id = flask.request.form.get("payment_method_id", type=int)
+
+        if not payment_method_id:
+            flask.flash("Please select a payment method.", "error")
+            return flask.redirect(flask.url_for("order.place_order", order_id=order_id))
+
+        # Verify payment method exists and is active
+        payment_method = (
+            db.session.query(PaymentMethod)
+            .filter_by(id=payment_method_id, is_active=1)
+            .first()
+        )
+
+        if payment_method is None:
+            flask.flash("Invalid payment method.", "danger")
+            return flask.redirect(flask.url_for("order.place_order", order_id=order_id))
+
         order.status = "PLACED"
+        order.payment_method_id = payment_method_id
         order.placed_at = datetime.datetime.now(datetime.timezone.utc)
         db.session.commit()
 
@@ -347,6 +385,13 @@ def place_order(order_id):
         return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
 
     # GET request - show checkout page
+    payment_methods = (
+        db.session.query(PaymentMethod)
+        .filter_by(is_active=1)
+        .order_by(PaymentMethod.name)
+        .all()
+    )
+
     items = (
         db.session.query(OrderItem, MenuItem)
         .join(MenuItem, OrderItem.menu_item_id == MenuItem.id)
@@ -376,6 +421,7 @@ def place_order(order_id):
         "order/checkout.html",
         order=order_dict,
         items=items_list,
+        payment_methods=payment_methods,
     )
 
 
@@ -391,7 +437,7 @@ def cancel_order(order_id):
     )
 
     if result is None:
-        flask.flash("Order not found.", "error")
+        flask.flash("Order not found.", "danger")
         return flask.redirect(flask.url_for("order.list_orders"))
 
     order, user = result
@@ -405,7 +451,7 @@ def cancel_order(order_id):
         return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
 
     if order.status == "COMPLETED":
-        flask.flash("Cannot cancel a completed order.", "error")
+        flask.flash("Cannot cancel a completed order.", "danger")
         return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
 
     order.status = "CANCELLED"
@@ -413,6 +459,36 @@ def cancel_order(order_id):
     db.session.commit()
 
     flask.flash("Order cancelled successfully.", "success")
+    return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
+
+
+@blueprint.route("/<int:order_id>/update-payment", methods=("POST",))
+@login_required
+@role_required("ADMIN")
+def update_payment_method(order_id):
+    payment_method_id = flask.request.form.get("payment_method_id", type=int)
+
+    order = db.session.query(Order).filter_by(id=order_id).first()
+
+    if order is None:
+        flask.flash("Order not found.", "danger")
+        return flask.redirect(flask.url_for("order.list_orders"))
+
+    # Verify payment method exists and is active
+    payment_method = (
+        db.session.query(PaymentMethod)
+        .filter_by(id=payment_method_id, is_active=1)
+        .first()
+    )
+
+    if payment_method is None:
+        flask.flash("Invalid payment method.", "danger")
+        return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
+
+    order.payment_method_id = payment_method_id
+    db.session.commit()
+
+    flask.flash("Payment method updated successfully.", "success")
     return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
 
 

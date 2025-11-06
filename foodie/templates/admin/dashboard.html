@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome to the admin dashboard, {{ g.user.full_name }}!</p>
+</div>
+
+<div class="container-lg">
+    <div class="card">
+        <h2>{{ stats.total_users }}</h2>
+        <p>Total Users</p>
+    </div>
+    
+    <div class="card">
+        <h2>{{ stats.total_restaurants }}</h2>
+        <p>Total Restaurants</p>
+    </div>
+    
+    <div class="card">
+        <h2>{{ stats.total_orders }}</h2>
+        <p>Total Orders</p>
+    </div>
+    
+    <div class="card">
+        <h2>{{ stats.placed_orders }}</h2>
+        <p>Active Orders</p>
+    </div>
+    
+    <div class="card">
+            <h2>${{ "%.2f"|format(stats.total_revenue) }}</h2>
+            <p>Total Revenue</p>
+        </div>
+    </div>
+</div>
+
+<div class="container-lg">
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <p>
+            <a href="{{ url_for('admin.list_payment_methods') }}" class="btn btn-primary">Manage Payment Methods</a>
+            <a href="{{ url_for('order.list_orders') }}" class="btn btn-secondary">View Orders</a>
+        </p>
+    </div>
+</div>  
+
+<div class="container-lg">
+    <div class="card">
+        <h2>Recent Orders</h2>
+        {% if recent_orders %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>User</th>
+                        <th>Restaurant</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td><strong>#{{ order.id }}</strong></td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.restaurant_name }}</td>
+                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>
+                            {% if order.status == 'DRAFT' %}
+                                <span class="badge bg-secondary">Draft</span>
+                            {% elif order.status == 'PLACED' %}
+                                <span class="badge bg-primary">Placed</span>
+                            {% elif order.status == 'CANCELLED' %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% elif order.status == 'COMPLETED' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ order.created_at }}</td>
+                        <td>
+                            <a href="{{ url_for('order.view_order', order_id=order.id) }}" class="btn btn-primary btn-sm">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No recent orders.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

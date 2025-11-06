@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Methods{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <h1>Payment Methods</h1>
+    <p>
+        <a href="{{ url_for('admin.add_payment_method') }}" class="btn btn-success">Add Payment Method</a>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </p>
+</div>  
+
+{% if payment_methods %}
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for method in payment_methods %}
+                <tr>
+                    <td>{{ method.id }}</td>
+                    <td><strong>{{ method.name }}</strong></td>
+                    <td>{{ method.description }}</td>
+                    <td>
+                        {% if method.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ method.created_at }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_payment_method', method_id=method.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form method="post" action="{{ url_for('admin.toggle_payment_method', method_id=method.id) }}" style="display: inline;">
+                            {% if method.is_active %}
+                                <button type="submit" class="btn btn-secondary btn-sm">Deactivate</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card">
+        <p>No payment methods configured.</p>
+    </div>
+{% endif %}
+{% endblock %}
+

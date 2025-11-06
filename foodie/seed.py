@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 import flask
 
 from foodie.db import db
-from foodie.models import User, Restaurant, MenuItem
+from foodie.models import User, Restaurant, MenuItem, PaymentMethod
 
 
 def load_seed_data():
@@ -27,8 +27,25 @@ def seed_db():
 
     with app.app_context():
         data = load_seed_data()
+        create_payment_methods(data.get("payment_methods", []))
         create_users(data["users"])
         create_restaurants(data["restaurants"])
+
+
+def create_payment_methods(payment_methods_data):
+    """Create payment methods from JSON data."""
+    payment_methods = []
+    for method_data in payment_methods_data:
+        payment_method = PaymentMethod(
+            name=method_data["name"],
+            description=method_data.get("description", ""),
+            is_active=method_data.get("is_active", 1),
+        )
+        payment_methods.append(payment_method)
+
+    db.session.add_all(payment_methods)
+    db.session.commit()
+    click.echo(f"Created {len(payment_methods)} payment methods.")
 
 
 def create_users(users_data):
