@@ -2,6 +2,7 @@
 services:
   foodie:
     container_name: foodie
+    image: foodie:latest
     ports:
       - "6755:6755"
     environment:
