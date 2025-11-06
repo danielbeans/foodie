@@ -24,5 +24,5 @@ RUN uv run flask --app foodie seed-db
 
 EXPOSE 5001
 
-CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5001", "--workers", "4", "--threads", "2", "--timeout", "120", "wsgi:app"]
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:6755", "--workers", "4", "--threads", "2", "--timeout", "120", "wsgi:app"]
 
