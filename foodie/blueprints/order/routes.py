@@ -160,11 +160,7 @@ def add_item(order_id: int) -> flask.Response:
     menu_item_id = flask.request.form.get("menu_item_id", type=int)
     quantity = flask.request.form.get("quantity", 1, type=int)
 
-    order = (
-        db.session.query(Order)
-        .filter_by(id=order_id, user_id=flask.g.user.id, status="DRAFT")
-        .first()
-    )
+    order = db.session.query(Order).filter_by(id=order_id, status="DRAFT").first()
 
     if order is None:
         flask.flash("Order not found or cannot be modified.", "danger")
