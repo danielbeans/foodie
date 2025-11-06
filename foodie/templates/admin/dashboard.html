@@ -73,7 +73,7 @@
                         <td><strong>#{{ order.id }}</strong></td>
                         <td>{{ order.full_name }}</td>
                         <td>{{ order.restaurant_name }}</td>
-                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>{% if order.restaurant_name == 'Flavors of India' %}₹{{ "%.2f"|format(order.total_amount) }}{% else %}${{ "%.2f"|format(order.total_amount) }}{% endif %}</td>
                         <td>
                             {% if order.status == 'DRAFT' %}
                                 <span class="badge bg-secondary">Draft</span>
