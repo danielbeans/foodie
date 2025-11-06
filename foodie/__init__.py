@@ -2,7 +2,7 @@ import pathlib
 
 import flask
 
-from foodie.blueprints import home, auth, restaurant, order, admin
+from foodie.blueprints import admin, auth, home, order, restaurant
 from foodie.db import db
 from foodie.seed import init_seed_db_command
 
