@@ -11,6 +11,7 @@ Implements RBAC with the following permissions:
 import datetime
 
 import flask
+import flask_sqlalchemy
 from sqlalchemy import func
 
 from foodie.db import db
@@ -22,7 +23,7 @@ blueprint = flask.Blueprint("order", __name__, url_prefix="/orders")
 
 @blueprint.route("/")
 @login_required
-def list_orders():
+def list_orders() -> flask.Response:
     if flask.g.user.role == "ADMIN":
         # Admin can see all orders
         orders = (
@@ -67,7 +68,7 @@ def list_orders():
 
 @blueprint.route("/<int:order_id>")
 @login_required
-def view_order(order_id):
+def view_order(order_id: int) -> flask.Response:
     result = (
         db.session.query(Order, User, Restaurant, PaymentMethod)
         .join(User, Order.user_id == User.id)
@@ -141,7 +142,7 @@ def view_order(order_id):
 
 @blueprint.route("/create/<int:restaurant_id>", methods=("GET", "POST"))
 @login_required
-def create_order(restaurant_id):
+def create_order(restaurant_id: int) -> flask.Response:
     restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).first()
 
     if restaurant is None:
@@ -180,7 +181,7 @@ def create_order(restaurant_id):
 
 @blueprint.route("/<int:order_id>/edit")
 @login_required
-def edit_order(order_id):
+def edit_order(order_id: int) -> flask.Response:
     result = (
         db.session.query(Order, Restaurant)
         .join(Restaurant, Order.restaurant_id == Restaurant.id)
@@ -249,7 +250,7 @@ def edit_order(order_id):
 
 @blueprint.route("/<int:order_id>/add-item", methods=("POST",))
 @login_required
-def add_item(order_id):
+def add_item(order_id: int) -> flask.Response:
     menu_item_id = flask.request.form.get("menu_item_id", type=int)
     quantity = flask.request.form.get("quantity", 1, type=int)
 
@@ -307,7 +308,7 @@ def add_item(order_id):
 
 @blueprint.route("/<int:order_id>/remove-item/<int:item_id>", methods=("POST",))
 @login_required
-def remove_item(order_id, item_id):
+def remove_item(order_id: int, item_id: int) -> flask.Response:
     order = (
         db.session.query(Order)
         .filter_by(id=order_id, user_id=flask.g.user.id, status="DRAFT")
@@ -332,7 +333,7 @@ def remove_item(order_id, item_id):
 @blueprint.route("/<int:order_id>/place", methods=("GET", "POST"))
 @login_required
 @role_required("ADMIN", "MANAGER")
-def place_order(order_id):
+def place_order(order_id: int) -> flask.Response:
     result = (
         db.session.query(Order, Restaurant)
         .join(Restaurant, Order.restaurant_id == Restaurant.id)
@@ -428,7 +429,7 @@ def place_order(order_id):
 @blueprint.route("/<int:order_id>/cancel", methods=("POST",))
 @login_required
 @role_required("ADMIN", "MANAGER")
-def cancel_order(order_id):
+def cancel_order(order_id: int) -> flask.Response:
     result = (
         db.session.query(Order, User)
         .join(User, Order.user_id == User.id)
@@ -465,7 +466,7 @@ def cancel_order(order_id):
 @blueprint.route("/<int:order_id>/update-payment", methods=("POST",))
 @login_required
 @role_required("ADMIN")
-def update_payment_method(order_id):
+def update_payment_method(order_id: int) -> flask.Response:
     payment_method_id = flask.request.form.get("payment_method_id", type=int)
 
     order = db.session.query(Order).filter_by(id=order_id).first()
@@ -492,7 +493,7 @@ def update_payment_method(order_id):
     return flask.redirect(flask.url_for("order.view_order", order_id=order_id))
 
 
-def update_order_total(db, order):
+def update_order_total(db: flask_sqlalchemy.SQLAlchemy, order: Order) -> None:
     total = (
         db.session.query(func.coalesce(func.sum(OrderItem.subtotal), 0))
         .filter_by(order_id=order.id)

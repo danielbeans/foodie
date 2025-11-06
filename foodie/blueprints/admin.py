@@ -2,6 +2,7 @@ import flask
 
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
+
 from foodie.db import db
 from foodie.models import PaymentMethod, User, Restaurant, Order
 from foodie.blueprints.auth import login_required, role_required
@@ -12,7 +13,7 @@ blueprint = flask.Blueprint("admin", __name__, url_prefix="/admin")
 @blueprint.route("/")
 @login_required
 @role_required("ADMIN")
-def dashboard():
+def dashboard() -> flask.Response:
     stats = {
         "total_users": db.session.query(func.count(User.id)).scalar(),
         "total_restaurants": db.session.query(func.count(Restaurant.id)).scalar(),
@@ -56,7 +57,7 @@ def dashboard():
 @blueprint.route("/payment-methods")
 @login_required
 @role_required("ADMIN")
-def list_payment_methods():
+def list_payment_methods() -> flask.Response:
     payment_methods = db.session.query(PaymentMethod).order_by(PaymentMethod.name).all()
     return flask.render_template(
         "admin/payment_methods.html", payment_methods=payment_methods
@@ -66,7 +67,7 @@ def list_payment_methods():
 @blueprint.route("/payment-methods/add", methods=("GET", "POST"))
 @login_required
 @role_required("ADMIN")
-def add_payment_method():
+def add_payment_method() -> flask.Response:
     if flask.request.method == "POST":
         name = flask.request.form["name"]
         description = flask.request.form.get("description", "")
@@ -99,7 +100,7 @@ def add_payment_method():
 @blueprint.route("/payment-methods/<int:method_id>/edit", methods=("GET", "POST"))
 @login_required
 @role_required("ADMIN")
-def edit_payment_method(method_id):
+def edit_payment_method(method_id: int) -> flask.Response:
     method = db.session.query(PaymentMethod).filter_by(id=method_id).first()
 
     if method is None:
@@ -132,7 +133,7 @@ def edit_payment_method(method_id):
 @blueprint.route("/payment-methods/<int:method_id>/toggle", methods=("POST",))
 @login_required
 @role_required("ADMIN")
-def toggle_payment_method(method_id):
+def toggle_payment_method(method_id: int) -> flask.Response:
     method = db.session.query(PaymentMethod).filter_by(id=method_id).first()
 
     if method is None:

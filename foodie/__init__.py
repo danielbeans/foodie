@@ -7,7 +7,7 @@ from foodie.db import db
 from foodie.seed import init_seed_db_command
 
 
-def create_app():
+def create_app() -> flask.Flask:
     app = flask.Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",

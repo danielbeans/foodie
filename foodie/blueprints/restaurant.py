@@ -1,5 +1,6 @@
 import flask
 from sqlalchemy import func
+
 from foodie.db import db
 from foodie.models import Restaurant, MenuItem
 from foodie.blueprints.auth import login_required, check_country_access
@@ -9,7 +10,7 @@ blueprint = flask.Blueprint("restaurant", __name__, url_prefix="/restaurants")
 
 @blueprint.route("/")
 @login_required
-def list_restaurants():
+def list_restaurants() -> flask.Response:
     if flask.g.user.role == "ADMIN":
         # Admin can see all restaurants
         restaurants = (
@@ -55,7 +56,7 @@ def list_restaurants():
 
 @blueprint.route("/<int:restaurant_id>")
 @login_required
-def view_restaurant(restaurant_id):
+def view_restaurant(restaurant_id: int) -> flask.Response:
     restaurant = db.session.query(Restaurant).filter_by(id=restaurant_id).first()
 
     if restaurant is None:

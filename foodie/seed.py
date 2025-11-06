@@ -6,6 +6,7 @@ Run with: uv run flask --app foodie seed-db
 import click
 import json
 import pathlib
+from typing import Any
 from werkzeug.security import generate_password_hash
 
 import flask
@@ -14,13 +15,13 @@ from foodie.db import db
 from foodie.models import User, Restaurant, MenuItem, PaymentMethod
 
 
-def load_seed_data():
+def load_seed_data() -> dict[str, Any]:
     seed_file = pathlib.Path(__file__).parent.parent / "seed_data.json"
     with seed_file.open() as f:
         return json.load(f)
 
 
-def seed_db():
+def seed_db() -> None:
     """Seed the database with initial data from JSON file."""
 
     app = flask.current_app
@@ -32,8 +33,9 @@ def seed_db():
         create_restaurants(data["restaurants"])
 
 
-def create_payment_methods(payment_methods_data):
+def create_payment_methods(payment_methods_data: list[dict[str, Any]]) -> None:
     """Create payment methods from JSON data."""
+
     payment_methods = []
     for method_data in payment_methods_data:
         payment_method = PaymentMethod(
@@ -48,8 +50,9 @@ def create_payment_methods(payment_methods_data):
     click.echo(f"Created {len(payment_methods)} payment methods.")
 
 
-def create_users(users_data):
+def create_users(users_data: list[dict[str, Any]]) -> None:
     """Create users from JSON data."""
+
     users = []
     for user_data in users_data:
         user = User(
@@ -66,8 +69,9 @@ def create_users(users_data):
     click.echo(f"Created {len(users)} users.")
 
 
-def create_restaurants(restaurants_data):
+def create_restaurants(restaurants_data: list[dict[str, Any]]) -> None:
     """Create restaurants and menu items from JSON data."""
+
     for restaurant_data in restaurants_data:
         restaurant = Restaurant(
             name=restaurant_data["name"],
@@ -97,12 +101,12 @@ def create_restaurants(restaurants_data):
 
 
 @click.command("seed-db")
-def seed_db_command():
+def seed_db_command() -> None:
     seed_db()
     click.echo("Database seeded successfully.")
 
 
-def init_seed_db_command(app):
+def init_seed_db_command(app: flask.Flask) -> None:
     """Register the seed command with the Flask app."""
 
     app.cli.add_command(seed_db_command)

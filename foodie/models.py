@@ -15,8 +15,6 @@ from foodie.db import db
 
 
 class User(db.Model):
-    """User model with role-based access control."""
-
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
@@ -40,8 +38,6 @@ class User(db.Model):
 
 
 class Restaurant(db.Model):
-    """Restaurant model with country assignment."""
-
     __tablename__ = "restaurant"
 
     id = Column(Integer, primary_key=True)
@@ -62,8 +58,6 @@ class Restaurant(db.Model):
 
 
 class MenuItem(db.Model):
-    """Menu item model."""
-
     __tablename__ = "menu_item"
 
     id = Column(Integer, primary_key=True)
@@ -81,8 +75,6 @@ class MenuItem(db.Model):
 
 
 class PaymentMethod(db.Model):
-    """Payment method model."""
-
     __tablename__ = "payment_method"
 
     id = Column(Integer, primary_key=True)
@@ -98,8 +90,6 @@ class PaymentMethod(db.Model):
 
 
 class Order(db.Model):
-    """Order model"""
-
     __tablename__ = "order"
 
     id = Column(Integer, primary_key=True)
@@ -130,8 +120,6 @@ class Order(db.Model):
 
 
 class OrderItem(db.Model):
-    """Order item model"""
-
     __tablename__ = "order_item"
 
     id = Column(Integer, primary_key=True)

@@ -1,4 +1,6 @@
 import functools
+from typing import Callable
+
 import flask
 from werkzeug.security import check_password_hash
 
@@ -9,7 +11,7 @@ blueprint = flask.Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @blueprint.route("/login", methods=("GET", "POST"))
-def login():
+def login() -> flask.Response:
     if flask.request.method == "POST":
         username = flask.request.form["username"]
         password = flask.request.form["password"]
@@ -32,14 +34,14 @@ def login():
 
 
 @blueprint.route("/logout")
-def logout():
+def logout() -> flask.Response:
     flask.session.clear()
     flask.flash("You have been logged out.", "info")
     return flask.redirect(flask.url_for("home.index"))
 
 
 @blueprint.before_app_request
-def load_logged_in_user():
+def load_logged_in_user() -> None:
     """Load the logged-in user's information before each request."""
     user_id = flask.session.get("user_id")
 
@@ -49,7 +51,7 @@ def load_logged_in_user():
         flask.g.user = db.session.query(User).filter_by(id=user_id).first()
 
 
-def login_required(view):
+def login_required(view: Callable) -> Callable:
     """
     Decorator to require login for a view.
 
@@ -66,7 +68,7 @@ def login_required(view):
     return wrapped_view
 
 
-def role_required(*roles):
+def role_required(*roles: str) -> Callable:
     """
     Decorator to require specific role(s) for a view.
 
@@ -76,7 +78,7 @@ def role_required(*roles):
     Usage: @role_required('ADMIN') or @role_required('ADMIN', 'MANAGER')
     """
 
-    def decorator(view):
+    def decorator(view: Callable) -> Callable:
         @functools.wraps(view)
         def wrapped_view(**kwargs):
             if flask.g.user is None:
@@ -94,7 +96,7 @@ def role_required(*roles):
     return decorator
 
 
-def check_country_access(country):
+def check_country_access(country: str) -> bool:
     """
     Check if the current user has access to data from the specified country.
 
