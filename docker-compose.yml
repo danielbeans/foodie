@@ -1,7 +1,6 @@
 ---
 services:
   foodie:
-    build: .
     container_name: foodie
     ports:
       - "6755:6755"
