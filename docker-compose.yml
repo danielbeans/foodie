@@ -1,5 +1,4 @@
-version: "3.8"
-
+---
 services:
   foodie:
     build: .
@@ -7,7 +6,7 @@ services:
     ports:
       - "6755:6755"
     environment:
-      - SECRET_KEY=${SECRET_KEY:-}
+      - SECRET_KEY=${SECRET_KEY}
       - FLASK_ENV=production
     volumes:
       - ./instance:/app/instance
