@@ -128,6 +128,17 @@ rm instance/foodie.sqlite
 uv run flask --app foodie seed-db
 ```
 
+## Docker Deployment
+
+```bash
+docker-compose up -d
+```
+
+### Environment Variables
+
+- `SECRET_KEY` - Flask secret key for session management (default: "dev")
+- `FLASK_ENV` - Flask environment (default: production in Docker)
+
 ## Future Enhancements
 
 - Register user functionality

@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  foodie:
+    build: .
+    container_name: foodie
+    ports:
+      - "5001:5001"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-}
+      - FLASK_ENV=production
+    volumes:
+      - ./instance:/app/instance
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

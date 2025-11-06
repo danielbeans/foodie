@@ -8,4 +8,5 @@ dependencies = [
     "flask>=3.1.2",
     "flask-sqlalchemy>=3.1.1",
     "sqlalchemy>=2.0.44",
+    "gunicorn>=21.2.0",
 ]

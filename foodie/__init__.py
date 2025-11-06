@@ -1,3 +1,4 @@
+import os
 import pathlib
 
 import flask
@@ -10,7 +11,7 @@ from foodie.seed import init_seed_db_command
 def create_app() -> flask.Flask:
     app = flask.Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev",
+        SECRET_KEY=os.getenv("SECRET_KEY", "dev"),
         DATABASE=pathlib.Path(app.instance_path) / "foodie.sqlite",
         SQLALCHEMY_DATABASE_URI=f"sqlite:///{app.instance_path}/foodie.sqlite",
     )
